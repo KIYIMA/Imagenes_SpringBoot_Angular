@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <label for="nombre">Nombre:</label>
+     <input name="nombre" class="form-control" type="text" [formControl]="this.nombre">
+  </div>
+  <div class="col-12">
+    Apellidos: <input class="form-control" type="text" [formControl]="this.apellido">
+  </div>
+  <div class="col-12">
+    Email: <input class="form-control" type="text" [formControl]="this.email">
+  </div>
+  <div class="col-12">
+    Imagen: <input class="form-control" type="file"  (change)="onFileSelected($event)" #fileUpload>
+  </div>
+  <div class="btn col-12">
+    <button class="btn btn-outline-success" (click)="enviarFormulario()">Enviar</button>
+  </div>
+  </div>
+
+
+  <div class="row" *ngIf="userModel">
+    <div class="col" *ngFor="let usuario of userModel">
+      <div class="card">
+        <div class="card-body">
+          <img src="{{urlapi}}{{usuario.imagen}}" class="img-fluid"  alt="IMG">
+        </div>
+        <div class="card-footer">
+          <b style="display: flex; align-items: center; justify-content: center;" >{{usuario.apellido}} {{usuario.nombre}}</b>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
