@@ -3,10 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
+import { SelectImageComponent } from './select-image/select-image.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SelectImageComponent
   ],
   imports: [
     BrowserModule,

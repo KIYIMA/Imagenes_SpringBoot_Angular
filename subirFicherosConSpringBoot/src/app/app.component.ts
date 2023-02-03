@@ -56,4 +56,17 @@ export class AppComponent {
     //Añadimos a nuestro objeto formData nuestro objeto file
     this.formData.append("fichero", file);
   }
+  addImage(id:any,imagen:any){
+
+  }
+  deleteImage(imagen:string){
+    this.httpClient.get<any>('http://localhost:8080/photos/delete/'+ imagen).subscribe(data => {
+        //En este punto nuestra petición ha funcionado correctamente
+        alert("Imagen eliminada correctamente");
+        document.location.reload();
+    });
+  }
+  formAddImage(id:Number){
+    
+  }
 }

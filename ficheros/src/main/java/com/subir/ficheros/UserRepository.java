@@ -9,11 +9,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long>{
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
     public Optional<UserEntity> findByNombre(String nombre);
+
     public Optional<UserEntity> findByApellido(String apellido);
-    
+
+    public Optional<UserEntity> findByImagen(String imagen);
+
     public boolean existsByNombre(String nombre);
+
     public boolean existsByApellido(String apellido);
+
+    public boolean existsByImagen(String imagen);
 
 }
