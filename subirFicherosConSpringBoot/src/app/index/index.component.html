@@ -1,0 +1,60 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <label for="nombre">Nombre:</label>
+            <input name="nombre" class="form-control" type="text" [formControl]="this.nombre">
+        </div>
+        <div class="col-12">
+            Apellidos: <input class="form-control" type="text" [formControl]="this.apellido">
+        </div>
+        <div class="col-12">
+            Email: <input class="form-control" type="text" [formControl]="this.email">
+        </div>
+        <div class="col-12">
+            Imagen: <input class="form-control" type="file" (change)="onFileSelected($event)" #fileUpload>
+        </div>
+        <div class=" mt-3 mb-5 col-12">
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-outline-success" (click)="enviarFormulario()">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-center">
+                <h3><b>Usuarios</b></h3>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+    <div class="row" *ngIf="userModel">
+
+        <div class="col-4 col-md-4 col-sm-4 mt-2" *ngFor="let usuario of userModel">
+            <div class="card ">
+
+                <div class="card-body">
+                    <img *ngIf="usuario.imagen" src="{{ urlapi }}{{usuario.imagen}}" class="img-fluid" alt="IMG">
+                    <input class="file-select" type="file" name="addedImage" *ngIf="!usuario.imagen"
+                        (change)="addImage($event, usuario.id)" id="">
+                    <div class="absolute">
+                        <div class="d-flex justify-content-center mt-1">
+                            <input *ngIf="usuario.imagen" class="file-edit" type="file" name="editImage"
+                                (change)="editImage($event, usuario.id)" id="editImage">
+                            <a (click)="deleteImage(usuario.id)"><img
+                                    src="https://cdn-icons-png.flaticon.com/512/9301/9301218.png" width="20" alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <b style="display: flex; align-items: center; justify-content: center;">{{usuario.apellido}}
+                        {{usuario.nombre}}</b>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

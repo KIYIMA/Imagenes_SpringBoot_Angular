@@ -1,0 +1,51 @@
+.file-select, .file-edit {
+    position: relative;
+    display: inline-block;
+}
+
+.file-select::before {
+    background-color: #6d86d1;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    content: 'Add';
+    /* testo por defecto */
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+.file-edit::before{
+    background-color: #6d86d1;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 3px;
+        content: 'Edit';
+        /* testo por defecto */
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+}
+.card-body input{
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 10px;
+} 
+
+.file-select input[type="file"] {
+    opacity: 0;
+    width: 10%;
+    height: 32px;
+    display: inline-block;
+}
+
+#src-file1::before {
+    content: 'Seleccionar Archivo ';
+}

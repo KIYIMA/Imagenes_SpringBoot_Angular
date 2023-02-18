@@ -19,10 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
+import java.util.SimpleTimeZone;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -48,24 +56,27 @@ public class MyController {
 
         } catch (IOException e) {
 
-            System.out.println("Error = " + e.getMessage());
+            return new ResponseEntity(new Mensaje(e.getMessage()), HttpStatus.NOT_FOUND);
         }
 
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
     }
 
-    @GetMapping("/photos/delete/{filename}")
-    public ResponseEntity<UserEntity> deleteImage(@PathVariable("filename") String filename) throws IOException {
+    @GetMapping("/photos/delete/{usuario_id}")
+    public ResponseEntity<UserEntity> deleteImage(@PathVariable("usuario_id") Long id) throws IOException {
 
         UserEntity usuarioEntity;
         User usuario = new User();
 
-        if (userService.existsByImagen(filename)) {
+        if (userService.existById(id)) {
             String rutaAbsoluta = directorioImagenes.toFile().getAbsolutePath();
             try {
+                usuarioEntity = userService.getById(id).get();
                 // byte[] byteImg = multipartFile.getBytes();
-                Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + filename);
+                Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + usuarioEntity.getImagen());
                 Files.delete(rutaCompleta);
+                usuarioEntity.setImagen(null);
+                userService.save(usuarioEntity);
 
                 // usuario.setImagen(multipartFile.getOriginalFilename());
             } catch (IOException e) {
@@ -73,15 +84,41 @@ public class MyController {
             }
         }
 
-        try {
-            usuarioEntity = userService.getByImagen(filename).get();
-            usuarioEntity.setImagen(null);
-            userService.save(usuarioEntity);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity(new Mensaje("Imagen eliminada"), HttpStatus.OK);
+    }
+
+    @PostMapping("/photos/edit")
+    public ResponseEntity<?> editImage(@RequestParam("user_id") Long user_id,
+            @RequestParam("fichero") MultipartFile multipartFile) throws IOException {
+
+        UserEntity usuarioEntity;
+        User usuario = new User();
+
+        if (userService.existById(user_id)) {
+            String rutaAbsoluta = directorioImagenes.toFile().getAbsolutePath();
+            try {
+                usuarioEntity = userService.getById(user_id).get();
+
+                // Elimino la imagen anterior
+                Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + usuarioEntity.getImagen());
+                if (Files.exists(rutaCompleta)) {
+                    Files.delete(rutaCompleta);
+                }
+
+                // Agrego la imagen al fichero y a la base de datos
+                byte[] byteImg = multipartFile.getBytes();
+                rutaCompleta = Paths.get(rutaAbsoluta + "//" + getNameForSave(multipartFile.getOriginalFilename()));
+                Files.write(rutaCompleta, byteImg);
+
+                usuarioEntity.setImagen(getNameForSave(multipartFile.getOriginalFilename()));
+                userService.save(usuarioEntity);
+
+            } catch (IOException e) {
+                return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            }
         }
 
-        return new ResponseEntity(new Mensaje("Imagen eliminada"), HttpStatus.OK);
+        return new ResponseEntity(new Mensaje("Imagen editada"), HttpStatus.OK);
     }
 
     @PostMapping("/photos/add")
@@ -96,7 +133,8 @@ public class MyController {
             try {
                 // Guardo imagen en el directorio "images"
                 byte[] byteImg = multipartFile.getBytes();
-                Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + multipartFile.getOriginalFilename());
+                Path rutaCompleta = Paths
+                        .get(rutaAbsoluta + "//" + getNameForSave(multipartFile.getOriginalFilename()));
                 Files.write(rutaCompleta, byteImg);
 
                 // usuario.setImagen(multipartFile.getOriginalFilename());
@@ -107,7 +145,7 @@ public class MyController {
 
         try {
             usuarioEntity = userService.getOne(user_id).get();
-            usuarioEntity.setImagen(multipartFile.getOriginalFilename());
+            usuarioEntity.setImagen(getNameForSave(multipartFile.getOriginalFilename()));
             userService.save(usuarioEntity);
         } catch (Exception e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -135,15 +173,19 @@ public class MyController {
         UserEntity usuarioEntity;
         User usuario = new User();
 
+        Date localdate = new Date();
+        SimpleDateFormat fech = new SimpleDateFormat("ddMMyyyyHHmmssZ");
+
+        String imageName = fech.format(localdate) + "-" + multipartFile.getOriginalFilename();
+
         if (!multipartFile.isEmpty()) {
 
             String rutaAbsoluta = directorioImagenes.toFile().getAbsolutePath();
             try {
                 byte[] byteImg = multipartFile.getBytes();
-                Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + multipartFile.getOriginalFilename());
+                Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + imageName);
                 Files.write(rutaCompleta, byteImg);
 
-                // usuario.setImagen(multipartFile.getOriginalFilename());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -153,7 +195,7 @@ public class MyController {
         // Convertimos a objeto el JSON que recibimos del Front, diciendole de que clase
         // es.
         usuario = gson.fromJson(strUsuario, User.class);
-        usuario.setImagen(multipartFile.getOriginalFilename());
+        usuario.setImagen(imageName);
 
         // Cargo los datos en la tabla de user_entity
         usuarioEntity = new UserEntity(usuario.getNombre(), usuario.getApellido(), usuario.getEmail(),
@@ -169,8 +211,18 @@ public class MyController {
 
         String rutaAbsoluta = directorioImagenes.toFile().getAbsolutePath();
         List<UserEntity> list = userService.list();
+
         return new ResponseEntity(list, HttpStatus.OK);
 
     }
 
+    // Methods helpers
+    public String getNameForSave(String originalImageName) {
+        Date localdate = new Date();
+        SimpleDateFormat fech = new SimpleDateFormat("ddMMyyyyHHmmssZ");
+
+        String imageName = fech.format(localdate) + "-" + originalImageName;
+
+        return imageName;
+    }
 }

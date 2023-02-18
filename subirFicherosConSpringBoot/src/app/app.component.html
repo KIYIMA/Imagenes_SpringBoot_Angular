@@ -1,49 +1,40 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="text-decoration-none text-dark" [routerLink]="['/']" routerLinkActive="router-link-active">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="text-decoration-none text-dark" [routerLink]="['/index']"
+            routerLinkActive="router-link-active">Index</a>
+        </li>
+        <!-- <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Dropdown
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </li> -->
 
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-      <label for="nombre">Nombre:</label>
-     <input name="nombre" class="form-control" type="text" [formControl]="this.nombre">
-  </div>
-  <div class="col-12">
-    Apellidos: <input class="form-control" type="text" [formControl]="this.apellido">
-  </div>
-  <div class="col-12">
-    Email: <input class="form-control" type="text" [formControl]="this.email">
-  </div>
-  <div class="col-12">
-    Imagen: <input class="form-control" type="file"  (change)="onFileSelected($event)" #fileUpload>
-  </div>
-  <div class="btn col-12">
-    <button class="btn btn-outline-success" (click)="enviarFormulario()">Enviar</button>
-  </div>
-  </div>
-
-
-  <div class="row" *ngIf="userModel">
-    
-    <div class="col-4 col-md-4 col-sm-4 mt-2" *ngFor="let usuario of userModel">
-        <div class="card ">
-          <div class="card-header">
-            Usuarios 
-          </div>
-          <div class="card-body">
-            <img src="{{urlapi}}{{usuario.imagen}}" class="img-fluid" alt="IMG">
-            <div class="absolute">
-              <div class="d-flex justify-content-center mt-1">
-                <a (click)="addImage(usuario.id, usuario.imagen)" href="#"><img src="https://cdn-icons-png.flaticon.com/512/9261/9261177.png" width="20" alt="">
-</a>
-                <a (click)="deleteImage( usuario.imagen)" href="#"><img src="https://cdn-icons-png.flaticon.com/512/9301/9301218.png" width="20" alt="">
-</a>
-              </div>
-            </div>
-          </div>
-          <div class="card-footer">
-            <b style="display: flex; align-items: center; justify-content: center;">{{usuario.apellido}} {{usuario.nombre}}</b>
-          </div>
-        </div>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
     </div>
-    
   </div>
+</nav>
 
-</div>
+<router-outlet></router-outlet>

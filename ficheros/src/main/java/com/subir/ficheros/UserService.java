@@ -28,6 +28,10 @@ public class UserService {
         return userRepository.findByNombre(nombre);
     }
 
+    public Optional<UserEntity> getById(Long id) {
+        return userRepository.findById(id);
+    }
+
     public Optional<UserEntity> getByImagen(String imagen) {
         return userRepository.findByImagen(imagen);
     }

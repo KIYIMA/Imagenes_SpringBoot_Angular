@@ -4,16 +4,27 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { SelectImageComponent } from './select-image/select-image.component';
+import { RouterModule, Routes } from '@angular/router';
+import { IndexComponent } from './index/index.component';
+import { HomeComponent } from './home/home.component';
+
+const appRoutes:Routes=[
+  {path:'', component:HomeComponent},
+  {path:'index', component:IndexComponent},
+  {path:'image/edit', component:SelectImageComponent}
+];
 
 @NgModule({
   declarations: [
     AppComponent,
-    SelectImageComponent
+    SelectImageComponent,
+    IndexComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]

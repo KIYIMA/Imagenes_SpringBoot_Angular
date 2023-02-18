@@ -1,39 +1,20 @@
-
 package com.subir.ficheros;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-@Entity
-public class UserEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Uss {
     private String nombre;
     private String apellido;
     private String email;
-    private String imagen;
+    private byte[] imagen;
 
-    public UserEntity() {
+    public Uss() {
+
     }
 
-    public UserEntity(String nombre, String apellido, String email, String imagen) {
+    public Uss(String nombre, String apellido, String email, byte[] imagen) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.imagen = imagen;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getNombre() {
@@ -60,12 +41,11 @@ public class UserEntity {
         this.email = email;
     }
 
-    public String getImagen() {
+    public byte[] getImagen() {
         return imagen;
     }
 
-    public void setImagen(String imagen) {
+    public void setImagen(byte[] imagen) {
         this.imagen = imagen;
     }
-
 }
